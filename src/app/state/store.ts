@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { devtools } from 'zustand/middleware';
+// import { devtools } from 'zustand/middleware';
 
 export interface TrackedProject {
   id: string;
@@ -26,6 +26,7 @@ export interface StoreActions {
   addProject: (project: TrackedProject) => void;
   removeProject: (projectId: string) => void;
   toggleBookmark: (projectId: string) => void;
+  setTrackedProjects: (projects: TrackedProject[]) => void;
 }
 
 const useStore: any = create<StoreState & StoreActions>((set) => ({
@@ -49,6 +50,7 @@ const useStore: any = create<StoreState & StoreActions>((set) => ({
           : project,
       ),
     })),
+  setTrackedProjects: (projects) => set({ trackedProjects: projects }),
 }));
 
 // Optionally add devtools during development for easier debugging
