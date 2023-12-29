@@ -20,7 +20,6 @@ export const fetchUserDashboard = async (
     }
 
     const projects = await response.json();
-    debugger;
     return projects;
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
