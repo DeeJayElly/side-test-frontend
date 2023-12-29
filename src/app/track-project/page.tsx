@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 import useStore, { StoreActions, StoreState } from '../state/store';
 import { useRouter } from 'next/navigation';
+import { trackProject } from '@/app/services/project.service';
+import { searchByContractAddress } from '@/app/services/etherscan.service';
 
 const TrackProject: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,22 +25,22 @@ const TrackProject: React.FC = () => {
   );
   const router = useRouter();
 
-  const handleTrackProject = () => {
-    // Replace with actual project tracking logic
-    // This should involve searching for the project by name or contract address
-    // and then adding it to the trackedProjects state.
+  const handleTrackProject = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
 
-    // For now, we'll just simulate adding a project.
-    const newProject = {
-      id: Date.now().toString(),
-      name: searchTerm,
-      logo: '', // Replace with actual logo url
-      price: 0, // Replace with actual price
-      isToken: true, // Determine based on the project type
-      isBookmarked: isBookmarked,
-    };
-    addProject(newProject);
-    router.push('/');
+      // const etherscanResult = await searchTokenOrNFT(searchTerm);
+      const projectData = await searchByContractAddress(searchTerm);
+
+      const newProject = await trackProject(projectData, accessToken);
+      addProject(newProject); // Update the store with the new project
+      router.push('/'); // Redirect to the dashboard
+    } catch (error) {
+      console.error('Error tracking project:', error);
+    }
   };
 
   return (
